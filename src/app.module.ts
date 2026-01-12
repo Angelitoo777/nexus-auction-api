@@ -8,6 +8,7 @@ import { AuctionsModule } from './auctions/auctions.module';
 import { User } from './users/entities/user.entity';
 import { Auction } from './auctions/entities/auction.entity';
 import { Products } from './products/entities/product.entity';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { Products } from './products/entities/product.entity';
     AuthModule,
     ProductsModule,
     AuctionsModule,
+    WalletModule,
   ],
   controllers: [],
   providers: [],

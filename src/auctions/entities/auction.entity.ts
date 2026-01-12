@@ -1,12 +1,14 @@
 import {
   Column,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes, Optional } from 'sequelize';
 import { Products } from 'src/products/entities/product.entity';
+import { WalletTransactions } from 'src/wallet/entities/wallet_transactions.entity';
 
 interface AuctionAttributes {
   id: string;
@@ -66,4 +68,7 @@ export class Auction extends Model<
     defaultValue: 'active',
   })
   status: string;
+
+  @HasMany(() => WalletTransactions)
+  wallet_transactions: WalletTransactions[];
 }

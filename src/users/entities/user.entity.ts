@@ -7,6 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes, Optional } from 'sequelize';
 import { Products } from 'src/products/entities/product.entity';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 
 interface UserAttributes {
   id: string;
@@ -55,4 +56,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
 
   @HasMany(() => Products)
   products: Products[];
+
+  @HasMany(() => Wallet)
+  wallets: Wallet[];
 }
