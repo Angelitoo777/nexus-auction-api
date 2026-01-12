@@ -22,7 +22,8 @@ export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'rol'>;
 export class User extends Model<UserAttributes, UserCreationAttributes> {
   @PrimaryKey
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
   })
   id: string;

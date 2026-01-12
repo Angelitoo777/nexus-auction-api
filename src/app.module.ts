@@ -9,6 +9,8 @@ import { User } from './users/entities/user.entity';
 import { Auction } from './auctions/entities/auction.entity';
 import { Products } from './products/entities/product.entity';
 import { WalletModule } from './wallet/wallet.module';
+import { Wallet } from './wallet/entities/wallet.entity';
+import { WalletTransactions } from './wallet/entities/wallet_transactions.entity';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { WalletModule } from './wallet/wallet.module';
         uri: configService.getOrThrow<string>('DATABASE_URL'),
         synchronize: true,
         autoLoadModels: true,
-        models: [User, Products, Auction],
+        models: [User, Products, Auction, Wallet, WalletTransactions],
       }),
     }),
     UsersModule,

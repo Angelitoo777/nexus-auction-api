@@ -29,7 +29,8 @@ export class Products extends Model<
 > {
   @PrimaryKey
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
   })
   id: string;
@@ -55,7 +56,7 @@ export class Products extends Model<
 
   @ForeignKey(() => User)
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: false,
   })
   ownerId: string;

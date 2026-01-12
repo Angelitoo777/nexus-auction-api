@@ -30,14 +30,15 @@ export class WalletTransactions extends Model<
 > {
   @PrimaryKey
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
   })
   id: string;
 
   @ForeignKey(() => Wallet)
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: false,
   })
   wallet_id: string;

@@ -31,14 +31,15 @@ export class Auction extends Model<
 > {
   @PrimaryKey
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
   })
   id: string;
 
   @ForeignKey(() => Products)
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: false,
   })
   productId: string;

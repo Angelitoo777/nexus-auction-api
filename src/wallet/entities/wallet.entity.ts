@@ -27,14 +27,15 @@ export type WalletCreationAttributes = Optional<
 export class Wallet extends Model<WalletAttributes, WalletCreationAttributes> {
   @PrimaryKey
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
   })
   id: string;
 
   @ForeignKey(() => User)
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: false,
     unique: true,
   })

@@ -3,13 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 import { ModelCtor } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersRepository {
   constructor(@InjectModel(User) private userData: ModelCtor<User>) {}
 
-  async create(username: string, email: string, password: string) {
-    return this.userData.create({ username, email, password });
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return this.userData.create({ ...createUserDto });
   }
 
   async findByEmail(email: string) {
