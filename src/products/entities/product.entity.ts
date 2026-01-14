@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   ForeignKey,
   HasMany,
@@ -60,6 +61,9 @@ export class Products extends Model<
     allowNull: false,
   })
   ownerId: string;
+
+  @BelongsTo(() => User)
+  owner: User;
 
   @HasMany(() => Auction)
   auctions: Auction[];
