@@ -1,34 +1,73 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import {
+  CreateProductDto,
+  CreateProductSchema,
+} from './dto/create-product.dto';
+import {
+  UpdateProductDto,
+  UpdateProductSchema,
+} from './dto/update-product.dto';
+import { AuthenticatedRequest } from 'src/auth/dto/token.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
-
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
-  }
 
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findAllByOwner(@Req() req: AuthenticatedRequest) {
+    const ownerId = req.user.id;
+    return this.productsService.findAllByOwner(ownerId);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.productsService.findById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  @UsePipes(new ZodValidationPipe(CreateProductSchema))
+  create(@Body() data: CreateProductDto, @Req() req: AuthenticatedRequest) {
+    const ownerId = req.user.id;
+    return this.productsService.create(data, ownerId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  @UsePipes(new ZodValidationPipe(UpdateProductSchema))
+  update(
+    @Param('id') id: string,
+    @Body() data: UpdateProductDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const ownerId = req.user.id;
+    return this.productsService.update(data, id, ownerId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const ownerId = req.user.id;
+    return this.productsService.delete(id, ownerId);
   }
 }
