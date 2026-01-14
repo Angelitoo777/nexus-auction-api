@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 
@@ -12,7 +12,7 @@ export class UsersService {
     );
 
     if (existingUser) {
-      throw new Error('Usuario o correo ya existente.');
+      throw new ConflictException('Usuario o correo ya existente.');
     }
 
     return this.usersRepository.create(createUserDto);

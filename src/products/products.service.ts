@@ -1,26 +1,74 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ProductsRepository } from './products.repository';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(private productRepository: ProductsRepository) {}
+
+  async findAll() {
+    return this.productRepository.findAll({ status: 'available' });
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAllByOwner(ownerId: string) {
+    return this.productRepository.findAll({ ownerId });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findById(id: string) {
+    const product = await this.productRepository.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException('Producto no encontrado');
+    }
+
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async create(createProductDto: CreateProductDto, ownerId: string) {
+    return this.productRepository.create(createProductDto, ownerId);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  private async validateProductAccess(id: string, ownerId: string) {
+    const product = await this.productRepository.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException('Producto no encontrado');
+    }
+
+    if (product.ownerId !== ownerId) {
+      throw new UnauthorizedException(
+        'No autorizado para actualizar este producto',
+      );
+    }
+
+    if (product.status === 'auctioning' || product.status === 'sold') {
+      throw new ConflictException(
+        'No se puede actualizar un producto en subasta o vendido',
+      );
+    }
+
+    return product;
+  }
+
+  async update(
+    updateProductDto: UpdateProductDto,
+    id: string,
+    ownerId: string,
+  ) {
+    await this.validateProductAccess(id, ownerId);
+
+    return this.productRepository.update(updateProductDto, id);
+  }
+
+  async delete(id: string, ownerId: string) {
+    await this.validateProductAccess(id, ownerId);
+
+    return this.productRepository.delete(id);
   }
 }
